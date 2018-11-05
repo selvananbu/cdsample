@@ -1,0 +1,258 @@
+/* @flow */
+
+import React, { Component } from 'react';
+import {
+  View,
+  StyleSheet,
+  AsyncStorage,
+  FlatList,
+  TouchableOpacity,
+  TouchableHighlight,
+  Modal,
+  ScrollView
+} from 'react-native';
+
+import { width, height, totalSize } from 'react-native-dimension';
+import axios from 'axios';
+// import {RadioGroup, RadioButton} from 'react-native-flexi-radio-button'
+import { Dialog } from 'react-native-simple-dialogs';
+import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import { Container, Header, Content, ListItem, Text, Radio, Right, Left } from 'native-base';
+import DialogAndroid from 'react-native-dialogs';
+
+
+var valueIdx = {};
+export default class LiSettings extends Component {
+
+  constructor(props){
+    super(props);
+    this.state={
+      attributeList:'',
+      modalVisible:false,
+      currentUnit:{}
+    }
+  }
+  componentDidMount(){
+    var self = this;
+
+    _retrieveData = async () => {
+      try {
+        const value = await AsyncStorage.getItem('attribute');
+        if (value !== null) {
+          // We have data!!
+          self.setState({
+            attributeList:JSON.parse(value)
+          });
+
+          if (value !== undefined) {
+
+            JSON.parse(value).attr.map((item, innervalue) => {
+              _retrieveData = async () => {
+                try {
+                  const valueIndex = await AsyncStorage.getItem(item.attrType);
+                  if (valueIndex !== null) {
+                    this.setState({ [item.attrType]: valueIndex});
+                    valueIdx[item.attrType] = valueIndex;
+                  }
+                }
+                catch (error) {
+                }
+              }
+              _retrieveData();
+            });
+          }
+        }
+        else{
+          axios.get('http://swpdmsrv4.lisec.internal:18707/openapi/DEMO/PROD/search/attributes').then(function(response) {
+            console.log("Responseeeeeeeeeeeeeee",response);
+            _storeData = async () => {
+              try {
+                await AsyncStorage.setItem('attribute', JSON.stringify(response.data));
+              } catch (error) {
+              }
+            }
+            _storeData();
+
+            self.setState({
+              attributeList:response.data
+            });
+          })
+          .catch(function(err) {
+            console.log(err,'error');
+          })
+        }
+      }
+      catch (error) {
+      }
+    }
+    _retrieveData();
+  }
+  async onAttributeUnitClicked(unit){
+    var attributeItems = [];
+    var favUnit = unit.favUnitIdx;
+    unit.unit.map((item,value) => {
+      attributeItems.push({label:item.unitStr,id:item.unitName});
+    });
+    const { selectedItem } = await DialogAndroid.showPicker('Select a Fav. Unit', null, {
+      positiveText: null,
+      negativeText: 'Cancel',
+      type: DialogAndroid.listRadio,
+      selectedId: this.state[unit.attrType] === undefined ? unit.unit[unit.favUnitIdx].unitStr : unit.unit[this.state[unit.attrType]].unitStr,
+      items: attributeItems
+    });
+    if (selectedItem) {
+      var tempList = this.state.attributeList;
+      _storeData = async () => {
+        try {
+          // console.log(unit.attrType,unit.unit.ind,'cehck');
+          unit.unit.map((unitItem,unitIndex) => {
+                if(unitItem.unitName === selectedItem.id){
+                        favUnit = unitIndex;
+              }
+          });
+          await AsyncStorage.setItem(unit.attrType,favUnit.toString());
+          
+        } catch (error) {
+        }
+      }
+      _storeData();
+      this.setState({[unit.attrType]: favUnit})
+    }
+  }
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
+  componentWillUnmount(){
+
+  }
+  renderSeparator = () => (
+    <View
+      style={{
+        height:1,
+        width:"100%",
+        backgroundColor:"#CED0CE",
+      }}
+    />
+  );
+  render() {
+
+    if(this.state.currentUnit.unit !== undefined && this.state.currentUnit.unit !== {}){
+      {this.state.currentUnit.unit.map((innerItem,innerValue) => {
+
+      })
+    }
+  }
+  if(this.state.attributeList.attr !== undefined){
+    this.state.attributeList.attr.map((innerItem,innerVal) => {
+
+      if(this.state[innerItem.attrType] === undefined){
+        unitName = this.state[innerItem.attrType] === undefined? innerItem.unit[innerItem.favUnitIdx].unitStr : innerItem.unit[this.state[innerItem.attrType]].unitStr;
+      }
+    });
+  }
+  return (
+    <View style={styles.container}>
+      <Text style={{color:"#c13e6c",fontSize:17,margin:3}}>
+        Attribute Units
+      </Text>
+      {this.state.attributeList.attr !== undefined ?
+      <ScrollView>
+        {this.state.attributeList.attr.map((item,value) => {
+          return(<TouchableOpacity
+            style={{borderBottomWidth:1,borderBottomColor:'#dadada'}}
+            onPress={this.onAttributeUnitClicked.bind(this, item)}>
+            <View style={styles.flatview}>
+              <Text style={styles.orderno}>{item.attrType}</Text>
+              <Text style={styles.pane}>{valueIdx[item.attrType] === undefined ? (this.state[item.attrType] === undefined? item.unit[item.favUnitIdx].unitStr : item.unit[this.state[item.attrType]].unitStr) : item.unit[valueIdx[item.attrType]].unitStr}</Text>
+            </View>
+          </TouchableOpacity>);
+        })}
+      </ScrollView>
+
+        // <FlatList
+        //   data={this.state.attributeList.attr}
+        //   ItemSeparatorComponent={this.renderSeparator}
+        //   keyExtractor={(item, index) => index}
+        //   renderItem={({item , separators}) => (
+        //     <TouchableOpacity
+        //       onPress={this.onAttributeUnitClicked.bind(this, item)}>
+        //       <View style={styles.flatview}>
+        //         <Text style={styles.orderno}>{item.attrType}</Text>
+        //         <Text style={styles.pane}>{this.state[item.attrType]}</Text>
+        //       </View>
+        //     </TouchableOpacity>
+        //   )}
+        // />
+        : <View/>
+      }
+    </View>
+
+  );
+}
+}
+
+const styles = StyleSheet.create({
+  containerPlain: {
+    backgroundColor:'#F5FCFF',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems:'center'
+  },
+  flatview: {
+    justifyContent: 'center',
+    padding:2,
+    borderRadius: 2,
+    margin:8
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#F5FCFF',
+  },
+  items: {
+    flexDirection:'row',
+    padding:10,
+    borderTopWidth:0.5,
+    borderBottomWidth:0.5,
+  },
+  header: {
+    backgroundColor: '#dfcee7',
+    padding:10,
+  },
+  ImageIconStyle:{
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    width:15,
+    height:25,
+    alignItems: 'stretch',
+    resizeMode: 'stretch',
+  },
+  text: {
+    color: '#4f603c',
+    fontSize: 20,
+    alignItems: 'flex-start',
+    width:375,
+  },
+  headerText: {
+    color:'#660033',
+    fontSize: 30,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontFamily: 'Cochin',
+    paddingBottom:10
+  },
+  orderno: {
+    fontSize: 20,
+    fontFamily: 'Cochin',
+  },
+  pane: {
+    fontFamily: 'Cochin',
+    color:'#9e9e9e'
+  },
+  paneleft: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    fontFamily: 'Cochin',
+    alignItems: 'flex-end',
+  }
+});

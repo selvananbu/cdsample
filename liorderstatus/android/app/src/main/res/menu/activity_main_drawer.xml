@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@id/dynamic"
+            android:title="Category">
+            <menu>
+                <item
+                    android:title=" "></item>
+
+            </menu>
+
+        </item>
+    </group>
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_home"
+                android:icon="@drawable/ic_home_black_24dp"
+                android:title="Home" />
+            <item
+                android:id="@+id/nav_bundle"
+                android:icon="@drawable/ic_add_black_24dp"
+                android:title="Bundle" />
+            <item
+                android:id="@+id/nav_newsfeed"
+                android:icon="@drawable/ic_rss_feed_black_24dp"
+                android:title="News Feed" />
+
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="Settings" />
+            <item
+                android:id="@+id/nav_login"
+                android:icon="@drawable/ic_account_circle_black_24dp"
+                android:title="Account" />
+
+        </menu>
+    </item>
+
+</menu>

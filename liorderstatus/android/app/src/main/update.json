@@ -1,0 +1,8 @@
+{  
+    "android": [
+      {
+        "version": "18.06",
+		"minimum_version": "18.06"
+      }
+    ]
+} 

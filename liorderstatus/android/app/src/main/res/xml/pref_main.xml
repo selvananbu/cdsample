@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:defaultValue=" "
+        android:key="blank_notification2"
+        android:title=" "/>
+    <!--<PreferenceCategory android:title="Barcode">-->
+        <!--<ListPreference>-->
+
+        <!--</ListPreference>-->
+    <!--</PreferenceCategory>-->
+
+    <PreferenceCategory android:title="General">
+        <ListPreference
+        android:defaultValue="English"
+        android:summary="English"
+        android:entries="@array/pref_language"
+        android:entryValues="@array/pref_language_list"
+        android:key="key_lang_list"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_title_language" />
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Attribute Units">
+        <!--<ListPreference-->
+            <!--android:defaultValue="180"-->
+            <!--android:entries="@array/pref_unit_list"-->
+            <!--android:entryValues="@array/pref_unit_list_values"-->
+            <!--android:key="key_attribute_list"-->
+            <!--android:negativeButtonText="@null"-->
+            <!--android:positiveButtonText="@null"-->
+            <!--android:title="@string/pref_title_attribute" />-->
+
+        <!--<ListPreference android:key="key_attribute_dummy"-->
+            <!--android:title="Attribute Types" android:summary="Dynamic categories summary"-->
+            <!--android:defaultValue="0" />-->
+        <EditTextPreference android:key="key_attribute_list"
+            android:title=" " android:summary=" "
+            android:defaultValue=" " />
+
+        <!--<Preference android:title="@string/pref_title_system_sync_settings">-->
+            <!--<intent android:action="android.settings.SYNC_SETTINGS" />-->
+        <!--</Preference>-->
+    </PreferenceCategory>
+    <PreferenceCategory android:title="About">
+        <EditTextPreference
+            android:capitalize="words"
+            android:defaultValue="@string/pref_default_app_version"
+            android:inputType="textCapWords"
+            android:key="key_appversion"
+            android:summary="1.0"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_title_app_version" />
+
+        <Preference
+            android:capitalize="words"
+            android:dependency="key_appversion"
+            android:defaultValue="@string/pref_default_app_term_conditions"
+            android:summary="@string/summary_terms_conditions"
+            android:inputType="textCapWords"
+            android:key="key_app_term"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_title_app_term_condition" />
+
+        <Preference
+            android:capitalize="words"
+            android:defaultValue="@string/pref_default_app_about_lisec"
+            android:summary="@string/summary_about_lisec"
+            android:inputType="textCapWords"
+            android:key="key_about_lisec"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_title_app_about_lisec" />
+    </PreferenceCategory>
+</PreferenceScreen>

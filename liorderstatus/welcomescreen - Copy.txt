@@ -1,0 +1,156 @@
+/* @flow */
+
+import React, { Component } from 'react';
+import {
+  Platform,
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity
+} from 'react-native';
+import MenuExample from './src/nativeconnector/menuconnector';
+
+import { Router, Scene, Actions, ActionConst, Drawer } from 'react-native-router-flux';
+import {AuthUtil,ensureAccessTokenIsValid} from './src/lilayoutauthentication/authutil';
+// import * as commonFunction from './src/lib/responseFunction';
+// import { setCriteriaName } from '.src/liaction';
+import * as LocalSettings from './src/lib/localsettings';
+
+import { width, height, totalSize } from 'react-native-dimension';
+
+export default class Welcome extends Component {
+
+   constructor(props){
+      super(props);
+      this.state ={
+          isLogging:true,
+      }
+  }
+
+  onPress = () => {
+         MenuExample.startConnectionActivity();
+    }
+
+    componentDidMount() {
+      LocalSettings.initializeLocalSettings(this.callBackAfterStorageInit.bind(this));
+    }
+     checkForLogin = async () => {
+        let baseurl = LocalSettings.getStorageItem("config.baseurl");
+        let loggedIn = LocalSettings.getStorageItem("config.loggedin");
+
+        if (baseurl === undefined || baseurl === []) {
+            baseurl = this.props.baseurl;
+            loggedIn = this.props.isloggedin;
+            if(loggedIn !== undefined && loggedIn === true){
+
+                let siteName = this.props.sitename;
+                LocalSettings.setStorageItem("config.baseurl",baseurl);
+                LocalSettings.setStorageItem("config.username", this.props.username);
+                LocalSettings.setStorageItem("config.sitename", siteName);
+                LocalSettings.setStorageItem("config.selectedSiteID", this.props.selectedSiteId);
+                LocalSettings.setStorageItem("config.accessToken."+siteName, this.props.accessToken);
+                LocalSettings.setStorageItem("config.refreshToken." + siteName, this.props.refreshToken);
+                LocalSettings.setStorageItem("config.loggedin", loggedIn);
+
+
+                ensureAccessTokenIsValid(this.callBackLoginCheck.bind(this));
+            }
+            else if(baseurl === undefined){
+          
+                    Actions.Login({
+                isBaseURLAvailable: false
+            });
+            }
+            else{
+                LocalSettings.setStorageItem("config.baseurl",baseurl);
+                Actions.Login();
+
+            }
+            
+        } else if (loggedIn === false || loggedIn === undefined) {
+            Actions.Login();
+        } else
+            ensureAccessTokenIsValid(this.callBackLoginCheck.bind(this));
+    }
+     callBackAfterStorageInit(){
+       this.checkForLogin(); 
+  }
+
+  callBackLoginCheck(accessToken){
+        this.setState({isLogging:false})
+        
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+
+        <Text style={styles.welcome}>
+        Welcome to Lisec Mobile Development!
+      </Text>
+      <Text style={styles.instructions}>
+        To get started, download a bundle using connect button or you can add download bundle from menu.
+      </Text>
+         <Image  source={{uri:'src_image_bundle_box'}}  style={styles.ImageIconStyle3} resizeMode='contain'></Image>
+        <TouchableOpacity style = {styles.buttonContainer}  onPress={this.onPress}>
+           <Text style={styles.textContainer}>Download Bundle</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+       justifyContent: 'center',
+       alignItems: 'center',
+       padding: 25,
+       margin:10
+  },
+
+  buttonContainer:{
+      backgroundColor: '#a0185c',
+      paddingVertical:15,
+        width:300,
+        height:60,
+        justifyContent: 'center',
+        alignItems: 'center',
+  },
+  textContainer:{
+            color: '#FFF',
+            textAlign: 'center',
+            fontWeight: '700',
+            padding:10,
+   },
+    ImageIconStyle3: {
+      paddingHorizontal: 1,
+      margin: 2,
+      height: height(50),
+      width: width(50),
+      resizeMode: 'contain',
+
+    },
+  image:{
+    height:100,
+    width:100
+  },
+  titleText: {
+   fontSize: 20,
+   fontWeight: 'bold',
+    fontFamily: 'Cochin',
+    paddingBottom:10
+ },
+ instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    margin: 10,
+  },
+});

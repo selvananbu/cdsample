@@ -1,0 +1,14 @@
+<Scene key="HomeScreen" component={HomeScreen} animation='fade' hideNavBar={true} initial={true} />
+            <Scene key="MachineDetails" component={MachineDetails} animation='fade' hideNavBar={true} />
+            <Scene key="MachineViewDetails" component={MachineViewDetails} animation='fade' hideNavBar={true} />
+            <Scene key="MenuDetails" component={MenuDetails} animation='fade' hideNavBar={true} />
+            <Scene key="DayCount" component={DayCount} animation='fade' hideNavBar={true} />
+            <Scene key="LiGuageViewer" component={LiGuageViewer} animation='fade' hideNavBar={true} />
+
+
+
+            <Scene key="LiPivotScreen" component={LiPivotScreen} animation='fade' hideNavBar={true}  />
+            <Scene key="LiReportScreen" component={LiReportScreen} animation='fade' hideNavBar={true}  />
+            <Scene key="LiChartScreen" component={LiChartScreen} animation='fade' hideNavBar={true} />
+            <Scene key="LiChartViewer" component={LiChartViewer} animation='fade' hideNavBar={true} />
+            <Scene key="LiChoiceViewer" component={LiChoiceViewer} animation='fade' hideNavBar={true} />

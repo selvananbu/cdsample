@@ -1,0 +1,45 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.liorderstatus">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    <application
+      android:name=".MainApplication"
+      android:label="@string/app_name"
+      android:icon="@mipmap/ic_launcher"
+      android:allowBackup="false"
+      android:launchMode="singleTask"
+      android:theme="@style/AppTheme.NoActionBar">
+      <activity
+        android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:launchMode="singleInstance"
+          android:screenOrientation="portrait"
+          android:configChanges="keyboardHidden|orientation|screenSize"
+        android:windowSoftInputMode="adjustResize">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+          <intent-filter>
+              <action android:name="android.intent.action.SEND" />
+              <category android:name="android.intent.category.DEFAULT" />
+              <data android:mimeType="text/plain" />
+          </intent-filter>
+      </activity>
+        <activity
+            android:name=".view.setting.SettingsActivity_test"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_settings"></activity>
+        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name="com.reactlibrary.view.NewConnectionActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.reactlibrary.view.ListConnectionActivity"
+            android:screenOrientation="portrait"/>
+    </application>
+
+</manifest>
