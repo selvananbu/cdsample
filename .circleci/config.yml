@@ -1,7 +1,7 @@
 version: 2
 jobs:
   node:
-    working_directory: ~/demo-react-native
+    working_directory: ~/liorderstatus
     docker:
       - image: circleci/node:8
     steps:
@@ -34,7 +34,7 @@ jobs:
             JEST_JUNIT_OUTPUT: test-results/jest/junit.xml
 
       - persist_to_workspace:
-          root: ~/demo-react-native
+          root: ~/liorderstatus
           paths:
             - node_modules
 
@@ -45,15 +45,15 @@ jobs:
           path: test-results
 
   android:
-    working_directory: ~/demo-react-native/android
+    working_directory: ~/liorderstatus/android
     docker:
       - image: circleci/android:api-27-node8-alpha
     steps:
       - checkout:
-          path: ~/demo-react-native
+          path: ~/liorderstatus
 
       - attach_workspace:
-          at: ~/demo-react-native
+          at: ~/liorderstatus
 
       - restore_cache:
           key: bundle-v1-{{ checksum "Gemfile.lock" }}-{{ arch }}
@@ -80,7 +80,7 @@ jobs:
   ios:
     macos:
       xcode: "9.0"
-    working_directory: ~/demo-react-native
+    working_directory: ~/liorderstatus
 
     # use a --login shell so our "set Ruby version" command gets picked up for later steps
     shell: /bin/bash --login -o pipefail
